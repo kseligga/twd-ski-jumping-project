@@ -7,7 +7,7 @@ all_comps<-read.csv("H:/Desktop/TWD_lab/Ski_jumping_data_center-main/all_comps.c
 namesU<-unique(names$name)
 namesU
 
-
+# kodzik ukradniety z analysis_script, robi jakies gowno
 all_results <- all_results[all_results['speed']>50 & all_results['speed']<115,]
 all_results <- all_results[all_results['dist']>40,]
 dataset <- merge(all_results,all_comps,by=c('id'),all.y=FALSE)
@@ -26,7 +26,7 @@ model<-gam(norm_dist~s(speed)+wind+hill_size_x+s(cumm_rating)+gender+training+s(
 summary(model)
 
 
-
+# szukanie najlepszych ELO w hisotrii
 all_names
 library(dplyr)
 colnames(ratings)
