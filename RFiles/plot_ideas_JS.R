@@ -100,6 +100,25 @@ national_speed %>%
 ggplot(mapping=aes(x=national_speed$speed))+
   geom_density()
 
+# comparing notes values for every country
+
+national_notes<-merge(all_results, improved_names, by='codex') %>% 
+  merge(all_comps, by='id') %>% 
+  filter(gender.x=='M', training==0, note_points>0) %>% # excluding trainings
+  group_by(nationality) %>% 
+  summarise(national_apps=n(), note_points, nationality) %>% 
+  filter(national_apps>100)
+
+national_notes %>% 
+  ggplot(mapping=aes(x=note_points, y=reorder(nationality,note_points)))+
+  geom_boxplot()+
+  xlim(35,60)
+
+# all notes plotted
+ggplot(mapping=aes(x=national_notes$note_points))+
+  geom_density()+
+  xlim(35,60)
+
 
 # ---------------------------------------------------
 # WIND - THE BEST FRIEND AND WORST ENEMY
