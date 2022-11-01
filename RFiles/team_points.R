@@ -24,4 +24,8 @@ df<-df %>%
 
 df %>% 
   ggplot(aes(y=points_sum, x=reorder(Name, -points_sum)))+
-  geom_bar(stat='identity')
+  geom_bar(stat='identity')+
+  scale_x_discrete(guide=guide_axis(title='Nationality', angle=35))+
+  scale_y_continuous(guide=guide_axis(title='Total number of points'))+
+  ggtitle('Total number of points by nationality',
+          subtitle='since 2008/2009 season')
