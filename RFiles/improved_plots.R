@@ -138,6 +138,22 @@ ggplot(mapping = aes(x = national_notes$note_points)) +
   geom_density() +
   xlim(40, 60)
 
+# plotting all speeds by hill type
+speed <- merge(all_results, improved_names, by = 'codex') %>%
+  merge(real_comps, by = 'id') %>%
+  filter(gender.x == 'M', speed > 0, training==0) %>%
+  mutate(hill_type=case_when(
+    k.point<100 ~ 'normal',
+    k.point<170 ~ 'large',
+    TRUE ~ 'ski flying hill')) %>% 
+  select(speed, hill_type) %>%
+  ggplot(mapping = aes(x = speed, fill=hill_type)) +
+  geom_density(alpha=0.2)
+
+speed + scale_fill_discrete(name = "Type of hill")+
+  scale_x_continuous(name='Speed distribution', limits = c(75,110))+
+  scale_y_continuous(name='Density')+
+  ggtitle('Distribution of speed by type of hill')
 
 # ---------------------------------------------------
 # WIND - THE BEST FRIEND AND WORST ENEMY
