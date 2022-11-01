@@ -12,6 +12,10 @@ library(ggplot2)
 library(forcats)
 
 all_comps <- mutate(all_comps, id = trimws(id)) #There are spaces at the end of each tournament ids, but there were no spaces in other dataframes
+improved_names<-improved_names %>% #whitebars problems fixed
+  mutate(improved_names, nationality = trimws(nationality), 
+         gender = trimws(gender),
+         name = trimws(name))
 
 real_comps <- filter(all_comps, training == 0)
 # best ELOs of all time
@@ -32,7 +36,7 @@ df5
 # distance to HS ratio histogram: men vs women
 
 df5 %>%
-  ggplot(mapping = aes(x = dist_HS_ratio, fill = gender)) +
+  ggplot(mapping = aes(x = dist_HS_ratio, fill = gender.x)) +
   geom_histogram(alpha = 0.5, bins = 100) +
   xlim(0.3, 1.3)
 
@@ -57,7 +61,7 @@ plot #notice how it rises, shows obv thing that jumpers with higher BIB jump bet
 # calculating sum of jumped distance per competitor
 
 sum_dist <- merge(all_results, improved_names, by = 'codex') %>%
-  # filter(gender=='M') %>% 
+  filter(gender=='M') %>% 
   group_by(codex, name) %>%
   summarise(sum_dist = sum(dist), apps = n()) %>%
   mutate(avg_jump = sum_dist / apps) %>%
@@ -67,10 +71,11 @@ sum_dist <- merge(all_results, improved_names, by = 'codex') %>%
 sum_dist # (poland mountain!)
 
 # calculating sum of jumped distance per nation
-all_results
+
 real_comps <- all_comps %>%
   filter(training == 0) %>%
   mutate(id = trimws(id))
+
 national_distance <- merge(all_results, improved_names, by = 'codex') %>%
   select(gender, nationality, dist, id) %>%
   merge(select(real_comps, id), by = 'id') %>%
@@ -96,8 +101,7 @@ national_speed <- merge(all_results, improved_names, by = 'codex') %>%
   select(nationality, speed) %>%
   filter(nationality %in% great5) %>%
   group_by(nationality) %>%
-  summarise(national_apps = n(), speed, nationality) %>%
-  filter(national_apps > 100)
+  summarise(national_apps = n(), speed, nationality)
 
 national_speed %>%
   ggplot(mapping = aes(x = speed, y = reorder(nationality, speed))) +
@@ -127,7 +131,7 @@ national_notes <- merge(all_results, improved_names, by = 'codex') %>%
 national_notes %>%
   ggplot(mapping = aes(x = note_points, y = reorder(nationality, note_points))) +
   geom_boxplot() +
-  xlim(35, 60)
+  xlim(45, 60) #they're all the same, boring :/
 
 # all notes plotted
 ggplot(mapping = aes(x = national_notes$note_points)) +
