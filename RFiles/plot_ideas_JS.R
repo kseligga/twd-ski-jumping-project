@@ -10,6 +10,10 @@ improved_names<-read.csv(paste(path,"/Ski_jumping_data_center-main/improved_name
 library(dplyr)
 library(ggplot2)
 library(forcats)
+library(hexbin)
+
+# color scheme
+colors3<-RColorBrewer::brewer.pal(n = 3, name = "Blues")
 
 # best ELOs of all time
 df<-merge(all_ratings, all_names, by='codex') %>% 
@@ -100,6 +104,29 @@ national_speed %>%
 ggplot(mapping=aes(x=national_speed$speed))+
   geom_density()
 
+# plotting all speeds based on hill type
+speed <- merge(all_results, improved_names, by = 'codex') %>%
+  merge(real_comps, by = 'id') %>%
+  filter(gender.x == 'M', speed > 0, training==0) %>%
+  mutate(hill_type=case_when(
+    k.point<100 ~ 'normal',
+    k.point<170 ~ 'large',
+    TRUE ~ 'ski flying hill')) %>% 
+  mutate(hill_type<-factor(hill_type, levels=c('normal', 'large', 'ski flying hill')))
+
+speed %>% 
+  select(speed, hill_type) %>%
+  ggplot(mapping = aes(x = speed, fill=hill_type)) +
+  geom_density(alpha=0.3)+
+  scale_fill_discrete(name = "Type of hill")+
+  scale_x_continuous(name='Speed distribution', limits = c(75,110))+
+  scale_y_continuous(name='Density')+
+  ggtitle('Distribution of speed by type of hill')+
+  theme_minimal()+
+  scale_fill_manual(values=colors3)
+
+# ---------------------------------------------------
+
 # comparing notes values for every country
 
 national_notes<-merge(all_results, improved_names, by='codex') %>% 
@@ -119,6 +146,52 @@ ggplot(mapping=aes(x=national_notes$note_points))+
   geom_density()+
   xlim(35,60)
 
+# ---------------------------------------------------
+# CORRELATIONS WITH DISTANCE
+
+# correlation between distance and speed/notes
+# for every jump we calculate deviation of speed/notes and distance, in terms of standard deviations from mean value in competition
+dist_correlations<-speed %>% 
+  group_by(id) %>% 
+  summarise(meanspeed_incomp=mean(speed),meandist_incomp=mean(dist), meannotes_incomp=mean(note_points),
+            speed_sd=sd(speed), dist_sd=sd(dist), notes_sd=sd(note_points)) %>% 
+  merge(speed, by='id') %>% 
+  mutate(speed_deviation=(speed-meanspeed_incomp)/speed_sd,
+         dist_deviation=(dist-meandist_incomp)/dist_sd,
+         note_deviation=(note_points-meannotes_incomp)/notes_sd) %>% 
+  filter(speed_deviation>-20)
+
+# plotting correlations
+# speed
+dist_correlations %>% 
+  ggplot(aes(x=speed_deviation,y=dist_deviation, color=hill_type))+
+  geom_point(alpha=0.1)+
+  geom_density2d()+
+  xlim(-4,4)+
+  ylim(-4,4)+
+  geom_smooth(method = "lm")
+
+# notes
+dist_correlations %>% 
+  ggplot(aes(x=note_deviation,y=dist_deviation))+
+  geom_point(alpha=0.1)+
+  geom_density2d()+
+  xlim(-5,4)+
+  ylim(-5,4)+
+  geom_smooth(method = "lm")
+
+# hexagonal heatmaps - cool plot but shitty here
+dist_correlations %>% 
+  ggplot(aes(x=speed_deviation,y=dist_deviation))+
+  stat_bin_hex(colour="black", na.rm=TRUE) +
+  scale_fill_gradientn(colours=c("white","cyan"))+
+  xlim(-2,2)
+
+dist_correlations %>% 
+  ggplot(aes(x=note_deviation,y=dist_deviation))+
+  stat_bin_hex(colour="black", na.rm=TRUE) +
+  scale_fill_gradientn(colours=c("white","cyan"))+
+  xlim(-3,3)
 
 # ---------------------------------------------------
 # WIND - THE BEST FRIEND AND WORST ENEMY
