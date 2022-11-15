@@ -14,6 +14,9 @@ library(hexbin)
 
 # color scheme
 colors3<-RColorBrewer::brewer.pal(n = 3, name = "Blues")
+all_comps <- mutate(all_comps, id = trimws(id)) #There are spaces at the end of each tournament ids, but there were no spaces in other dataframes
+
+real_comps <- filter(all_comps, training == 0)
 
 # best ELOs of all time
 df<-merge(all_ratings, all_names, by='codex') %>% 
