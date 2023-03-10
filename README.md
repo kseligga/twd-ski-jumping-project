@@ -1,4 +1,4 @@
-[finalny plakat] (https://www.canva.com/design/DAFSCkP4LCo/FMbTEx8QaDvw-AXUwY51rg/view)
+[finalny plakat](https://www.canva.com/design/DAFSCkP4LCo/FMbTEx8QaDvw-AXUwY51rg/view)
 
 **opisy zmiennych:**
 all_names | skoczkowie
