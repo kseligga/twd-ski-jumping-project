@@ -1,5 +1,4 @@
-# TWDprojekt1
-(╯°□°）╯︵ ┻━┻
+[finalny plakat] (https://www.canva.com/design/DAFSCkP4LCo/FMbTEx8QaDvw-AXUwY51rg/view)
 
 **opisy zmiennych:**
 all_names | skoczkowie
@@ -20,8 +19,8 @@ id | ID zawodów
 training | trening?
 place | kraj zawodów (XXX)
 gender | Men/Women
-hill_size_y | ? (taka jak x)
-team | drużynowe?
+hill_size_y | taka jak x
+team | czy drużynowe?
 type | 0 - Puchar Świata (1 dywizja) <br /> 1 - Puchar Kontynentalny (2 dywizja) <br /> 2 - Letnie Grand Prix <br />3 - FIS Cup (3 dywizja)<br /> 4 - Mistrzostwa Świata w Lotach<br />5 - Mistrzostwa Świata<br />6 - Mistrzostwa Świata Juniorów
 date | data
 
@@ -61,7 +60,7 @@ all_stats | statystyki o rundach skoków
 fis_code | ID zawodów
 humid | wilgotność
 snow | śnieg
-air | powietrze?
+air | powietrze
 weather_type | pogoda
 round_type | runda
 max_wind | max wiatr
